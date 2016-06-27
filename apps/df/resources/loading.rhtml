@@ -1,0 +1,14 @@
+<% content_for :loading do %>
+<% # Any HTML in this file will be visible on screen while your page loads
+   # its application JavaScript.  SproutCore applications are optimized for 
+   # caching and startup very fast, so your users will often only see this 
+   # content for a brief moment on their first app load, if at all.
+%>
+<style>
+body {
+    margin: 0;
+    padding: 0;
+}
+</style>
+<div class="loading" style="position:fixed;width:100%;height:30px;top:50%;font-size:12px;font-family:Arial;text-align:center;">Loading...<div>
+<% end %>
