@@ -12,9 +12,9 @@ Df.CanvasView = SC.View.extend({
         this.canvas = this.$('canvas')[0];
         this.engine = Df.engine;
         Df.camera = this.camera = Df.Camera.create({
-            x: this.engine.width / 2,
-            y: this.engine.height / 2,
-            zoom: 0.5
+            x: 0,
+            y: 0,
+            zoom: 1
         });
         this.ctx = this.canvas.getContext("2d");
         this.resizeCanvas();
@@ -28,46 +28,17 @@ Df.CanvasView = SC.View.extend({
     },
 
     paint: function (timestamp) {
-        this.ctx.strokeStyle = "#DDDD55";
-        this.ctx.lineWidth = 1;
+        var scope = this.engine.scope;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        var s = this.engine.props.length;
-        var zoom = this.camera.get('zoom');
-        var cx = this.camera.get('x');
-        var cy = this.camera.get('y');
+        this.ctx.save();
+        this.camera.applyInverseTransform(this.ctx);
+        this.applyCameraToViewPortTransform(this.ctx);
+        scope.paint(this.ctx, this.camera, timestamp);
+        this.ctx.restore();
+    },
 
-        var tail = 2.5;
-        
-        this.ctx.beginPath();
-
-        for (var i=0; i<this.engine.count; i++) {
-            var x = this.engine.floatBuffer[i*s+0];
-            var y = this.engine.floatBuffer[i*s+1];
-            var vx = this.engine.floatBuffer[i*s+2];
-            var vy = this.engine.floatBuffer[i*s+3];
-            var target = this.engine.intBuffer[i*s+4];
-            var isStatic = this.engine.intBuffer[i*s+5];
-            var dSq = vx*vx+vy*vy;
-
-            // camera transformation
-            x = zoom * (x - cx) + this.canvas.width / 2;
-            y = zoom * (y - cy) + this.canvas.height / 2;
-            vx = vx * zoom;
-            vy = vy * zoom;
-
-            if (dSq > 0.000000000001 ) {
-                var d = Math.sqrt(dSq);
-                this.ctx.moveTo(x, y);
-                this.ctx.lineTo(x - vx * tail, y - vy * tail);
-            } else {
-                this.ctx.moveTo(x-0.01, y-0.01);
-                this.ctx.lineTo(x+0.01, y+0.01);
-            }
-            
-        }
-
-        this.ctx.stroke();
+    applyCameraToViewPortTransform: function (ctx) {
+        ctx.translate(this.canvas.width/2, this.canvas.height/2);
     },
 
     triggerPaint: function () {
@@ -98,8 +69,8 @@ Df.CanvasView = SC.View.extend({
         var dy = evt.clientY - info.y;
         var x = info.cx - dx / zoom;
         var y = info.cy - dy / zoom;
-        this.camera.set('x', x);
-        this.camera.set('y', y);
+        //this.camera.set('x', x);
+        //this.camera.set('y', y);
     },
 
     mouseUp: function (evt) {
@@ -126,8 +97,8 @@ Df.CanvasView = SC.View.extend({
         var dy = touch.clientY - info.y;
         var x = info.cx - dx / zoom;
         var y = info.cy - dy / zoom;
-        this.camera.set('x', x);
-        this.camera.set('y', y);
+        //this.camera.set('x', x);
+        //this.camera.set('y', y);
     },
 
     touchEnd: function (touch) {
