@@ -113,27 +113,43 @@ Df.CanvasView = SC.View.extend({
     touchStart: function (touch) {
         // no op
         // todo: what is captureTouch
+
+        var forMove = touch.clientX <= this.canvas.width / 2;
+        
+        if (forMove) {
+            this.engine.control.intentX = 0;
+            this.engine.control.intentY = 0;
+            this.engine.control.touchStartX = touch.clientX;
+            this.engine.control.touchStartY = touch.clientY;
+            this.engine.control.touchId = touch.identifier;    
+        }
     },
 
-    touchesDragged: function (touch) {
+    touchesDragged: function (evt) {
         var major = this.canvas.width > this.canvas.height ? this.canvas.width : this.canvas.height;
-        var radius = major / 100;
-        var forMove = touch.startX <= this.canvas.width / 2;
-        if (forMove) {
-            var dx = touch.clientX - touch.startX;
-            var dy = touch.clientY - touch.startY;
+        var radius = major / 300;
+        for (var i = 0; i < evt.touches.length; i++) {
+            var touch = evt.touches[i];
+            if (touch.identifier === this.engine.control.touchId) {
+                var dx = touch.clientX - this.engine.control.touchStartX;
+                var dy = touch.clientY - this.engine.control.touchStartY;
 
-            this.engine.control.intentX = dx / radius;
-            this.engine.control.intentY = dy / radius;
-
-            console.log(dx / radius);
-        } else {
-            debugger;
+                this.engine.control.intentX = dx / radius;
+                this.engine.control.intentY = dy / radius;
+                console.log(this.engine.control.intentX);
+            }
         }
     },
 
     touchEnd: function (touch) {
         // no op
+        if (touch.identifier === this.engine.control.touchId) {
+            this.engine.control.intentX = 0;
+            this.engine.control.intentY = 0;
+            this.engine.control.touchId = null;
+            this.engine.control.touchStartX = undefined;
+            this.engine.control.touchStartY = undefined;
+        }
     },
 
     keyDown: function (evt) {

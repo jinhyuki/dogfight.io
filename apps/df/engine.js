@@ -12,7 +12,8 @@ Df.Engine = SC.Object.extend({
             up: false,
             down: false,
             left: false,
-            right: false
+            right: false,
+            touchId: null
         };
         this.aim = {
             isDown: false,
