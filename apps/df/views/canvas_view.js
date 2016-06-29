@@ -5,6 +5,9 @@ Df.CanvasView = SC.View.extend({
     acceptsFirstResponder: YES,
     acceptsKeyPane: YES,
 
+    // multi touch
+    acceptsMultitouch: YES,
+
     render: function (context, firstTime) {
         if (firstTime) {
             context.push('<canvas style="background:#666;"></canvas>');
