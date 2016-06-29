@@ -110,6 +110,11 @@ Df.CanvasView = SC.View.extend({
     resizeCanvas: function () {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
+        this.engine.bound.x0 = -this.canvas.width / 2 / this.camera.zoom - this.camera.x;
+        this.engine.bound.x1 = this.canvas.width / 2 / this.camera.zoom - this.camera.x;
+        this.engine.bound.y0 = -this.canvas.height / 2 / this.camera.zoom - this.camera.y;
+        this.engine.bound.y1 = this.canvas.height / 2 / this.camera.zoom- - this.camera.y;
+        console.log(this.engine.bound);
     },
 
     updateAim: function (evt) {
@@ -153,23 +158,22 @@ Df.CanvasView = SC.View.extend({
         this.engine.aim.y += this.engine.aim.vy * elapsedTime;
 
         // compute viewport position
-        this.engine.aim.cameraX = (this.engine.aim.x - this.camera.x) * this.camera.zoom;
-        this.engine.aim.cameraY = (this.engine.aim.y - this.camera.y) * this.camera.zoom;
-        this.engine.aim.clientX = this.engine.aim.cameraX + this.canvas.width / 2;
-        this.engine.aim.clientY = this.engine.aim.cameraY + this.canvas.height / 2;
+        // this.engine.aim.cameraX = (this.engine.aim.x - this.camera.x) * this.camera.zoom;
+        // this.engine.aim.cameraY = (this.engine.aim.y - this.camera.y) * this.camera.zoom;
+        // this.engine.aim.clientX = this.engine.aim.cameraX + this.canvas.width / 2;
+        // this.engine.aim.clientY = this.engine.aim.cameraY + this.canvas.height / 2;
 
         // cap aim position
-        if (this.engine.aim.clientX < 0) {
-            this.engine.aim.x -= this.engine.aim.clientX / this.camera.zoom;
-        } else if (this.engine.aim.clientX > this.canvas.width) {
-            this.engine.aim.x -= (this.engine.aim.clientX - this.canvas.width) / this.camera.zoom;
+        if (this.engine.aim.x < this.engine.bound.x0) {
+            this.engine.aim.x = this.engine.bound.x0;
+        } else if (this.engine.aim.x > this.engine.bound.x1) {
+            this.engine.aim.x = this.engine.bound.x1;
         }
-        if (this.engine.aim.clientY < 0) {
-            this.engine.aim.y -= this.engine.aim.clientY / this.camera.zoom;
-        } else if (this.engine.aim.clientY > this.canvas.height) {
-            this.engine.aim.y -= (this.engine.aim.clientY - this.canvas.height) / this.camera.zoom;
+        if (this.engine.aim.y < this.engine.bound.y0) {
+            this.engine.aim.y = this.engine.bound.y0;
+        } else if (this.engine.aim.y > this.engine.bound.y1) {
+            this.engine.aim.y = this.engine.bound.y1;
         }
-
     
     },
 

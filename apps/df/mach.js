@@ -11,9 +11,11 @@ Df.Mach = Df.Obj.extend({
 
     airDragFactor: 0.1,
 
+    recoil: 15,
+
     init: function () {
 
-        this.recoil = 0;
+        this.recoilTimer = 0;
 
         this.control = {
             intentX: 0,
@@ -46,7 +48,7 @@ Df.Mach = Df.Obj.extend({
         this.accel(this.control.intentX, this.control.intentY, elapsedTime);
         this.steer(elapsedTime);
 
-        if (this.aim.isDown && this.recoil-- <= 0) {
+        if (this.aim.isDown && this.recoilTimer-- <= 0) {
             this.shoot();    
         }
         
@@ -54,11 +56,21 @@ Df.Mach = Df.Obj.extend({
 
     afterStep: function (elapsedTime) {
         sc_super();
-
+        var bound = this.scope.getBound();
+        if (this.x < bound.x0) {
+            this.x = bound.x0;
+        } else if (this.x > bound.x1) {
+            this.x = bound.x1;
+        }
+        if (this.y < bound.y0) {
+            this.y = bound.y0;
+        } else if (this.y > bound.y1) {
+            this.y = bound.y1;
+        }
     },
 
     shoot: function () {
-        this.recoil = 18;
+        this.recoilTimer = this.recoil;
         var x = this.x;
         var y = this.y;
         var vx = Math.cos(this.rotation) * 370; 

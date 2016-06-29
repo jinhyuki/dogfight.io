@@ -5,7 +5,15 @@ Df.Engine = SC.Object.extend({
 
     init: function () {
         this.msStep = Math.floor(1000/60);
-        this.scope = Df.Scope.create({});
+        this.scope = Df.Scope.create({
+            engine: this
+        });
+        this.bound = {
+            x0: -10000,
+            x1: 10000,
+            y0: -10000,
+            y1: 10000
+        };
         this.control = {
             intentX: 0,
             intentY: 0,

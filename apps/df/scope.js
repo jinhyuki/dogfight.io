@@ -14,6 +14,10 @@ Df.Scope = SC.Object.extend({
         this.bulletCloud.fire(x, y, vx, vy);
     },
 
+    getBound: function () {
+        return this.engine.bound;
+    },
+
     add: function (obj) {
         console.log('Adding ' + obj.toString());
         this.objs.push(obj);
