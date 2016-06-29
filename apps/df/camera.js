@@ -5,8 +5,8 @@ Df.Camera = SC.Object.extend({
     y: 0,
 
     applyInverseTransform: function (ctx) {
-        ctx.scale(this.zoom, this.zoom);
         ctx.translate(-this.x, -this.y);
+        ctx.scale(this.zoom, this.zoom);
     }
 
 });

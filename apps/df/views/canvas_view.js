@@ -1,6 +1,10 @@
 Df.CanvasView = SC.View.extend({
     classNames: ['canvas-view'],
     
+    // for key event captures
+    acceptsFirstResponder: YES,
+    acceptsKeyPane: YES,
+
     render: function (context, firstTime) {
         if (firstTime) {
             context.push('<canvas style="background:#666;"></canvas>');
@@ -21,6 +25,9 @@ Df.CanvasView = SC.View.extend({
         
         window.addEventListener('resize', this.resizeCanvas.bind(this), false);
         this.worker = setInterval(this.triggerPaint.bind(this), this.engine.msStep);
+
+        // for key event captures
+        this.becomeFirstResponder();
     },
     
     didUpdateLayer: function () {
@@ -50,34 +57,56 @@ Df.CanvasView = SC.View.extend({
         this.canvas.height = window.innerHeight;
     },
 
+    updateAim: function (evt) {
+        this.engine.aim.clientX = evt.clientX;
+        this.engine.aim.clientY = evt.clientY;
+        this.engine.aim.cameraX = evt.clientX - this.canvas.width/2;
+        this.engine.aim.cameraY = evt.clientY - this.canvas.height/2;
+        this.engine.aim.x = this.engine.aim.cameraX / this.camera.zoom + this.camera.x;
+        this.engine.aim.y = this.engine.aim.cameraY / this.camera.zoom + this.camera.y;
+    },
+
+    mouseEntered: function (evt) {
+        this.updateAim(evt);
+        return YES; // so we get other events
+    },
+
+    mouseMoved: function (evt) {
+        this.updateAim(evt);
+        return YES; // so we get other events
+    },
+
+    mouseExited: function (evt) {
+        this.updateAim(evt);
+        return YES; // so we get other events
+    },
+
     mouseDown: function (evt) {
         console.log('Mouse down');
         // var rect = this.canvas.getBoundingClientRect();
-        this.mouseInfo = {
-            x: evt.clientX,
-            y: evt.clientY,
-            cx: this.camera.get('x'),
-            cy: this.camera.get('y')
-        };
+        this.updateAim(evt);
+        this.engine.aim.isDown = true;
+
         return YES; // so we get other events
     },
 
     mouseDragged: function (evt) {
-        var info = this.mouseInfo;
-        var zoom = this.camera.get('zoom');
-        var dx = evt.clientX - info.x;
-        var dy = evt.clientY - info.y;
-        var x = info.cx - dx / zoom;
-        var y = info.cy - dy / zoom;
-        //this.camera.set('x', x);
-        //this.camera.set('y', y);
+        // no op
+        return YES; // so we get other events
     },
 
     mouseUp: function (evt) {
         console.log('Mouse up');
+        if (!this.isFirstResponder) {
+            this.becomeFirstResponder();    
+        }
+        
+        this.updateAim(evt);
+        this.engine.aim.isDown = false;
+
         // apply one more time to set final position
-        this.mouseDragged(evt); 
-        this.mouseInfo = null; // cleanup info
+        // this.mouseDragged(evt); 
+        // this.engine.aim = null; // cleanup info
         return YES; // handled!
     },
 
@@ -105,6 +134,68 @@ Df.CanvasView = SC.View.extend({
         console.log('Touch End');
         this.touchesDragged(touch); 
         this.touchInfo = null;
+    },
+
+    keyDown: function (evt) {
+        var timestamp = evt.timeStamp;
+        switch (evt.keyCode) {
+        case SC.Event.KEY_RETURN: 
+            console.log('Enter down at ' + timestamp);
+            break;
+        case SC.Event.KEY_UP: case 119:
+            this.engine.control.up = timestamp;
+            break;
+        case SC.Event.KEY_DOWN: case 115:
+            this.engine.control.down = timestamp;
+            break;
+        case SC.Event.KEY_LEFT: case 97:
+            this.engine.control.left = timestamp;
+            break;
+        case SC.Event.KEY_RIGHT: case 100:
+            this.engine.control.right = timestamp;
+            break;
+        default: 
+            console.log('Key down ' + evt.keyCode + ' at ' + timestamp);
+        }
+
+        this.updateControlIntent();
+
+        return YES;
+    },
+
+    keyUp: function (evt) {
+        var timestamp = evt.timeStamp;
+
+        switch (evt.keyCode) {
+        case SC.Event.KEY_RETURN: 
+            console.log('Enter up at ' + timestamp);
+            break;
+        case SC.Event.KEY_UP: case 87:
+            this.engine.control.up = false;
+            break;
+        case SC.Event.KEY_DOWN: case 83: 
+            this.engine.control.down = false;
+            break;
+        case SC.Event.KEY_LEFT: case 65:
+            this.engine.control.left = false;
+            break;
+        case SC.Event.KEY_RIGHT: case 68:
+            this.engine.control.right = false;
+            break;
+        default: 
+            console.log('Key up ' + evt.keyCode + ' at ' + timestamp);
+        }
+
+        this.updateControlIntent();
+
+        return YES;
+    },
+
+    updateControlIntent: function () {
+
+        this.engine.control.intentX = ((this.engine.control.left ? -1 : 0) + (this.engine.control.right ? 1 : 0));
+        this.engine.control.intentY = ((this.engine.control.up ? -1 : 0) + (this.engine.control.down ? 1 : 0));
+
     }
 
 });

@@ -15,6 +15,13 @@ Df.Scope = SC.Object.extend({
         this.objs.forEach(function (obj) {
             obj.paint(ctx, camera, timestamp);
         });
+    },
+
+    step: function (elapsedTime) {
+
+        this.objs.forEach(function (obj) {
+            obj.step(elapsedTime);
+        });
     }
 
 });

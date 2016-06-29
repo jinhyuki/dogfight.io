@@ -1,19 +1,45 @@
 Df.Obj = SC.Object.extend({
-
-    width: 20,
-    height: 20,
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    width: 40,
+    height: 40,
+    rotation: 0,
+    color: "#DD55DD",
 
     init: function () {
         console.log('Obj init');
     },
 
     paint: function (ctx, camera, timestamp) {
-        ctx.strokeStyle = "#DDDD55";
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.strokeStyle = this.color;
         ctx.lineWidth = this.width;
         ctx.beginPath();
-        ctx.moveTo(0,-this.height/2);
-        ctx.lineTo(0,this.height/2);
+        ctx.moveTo(0, -this.height/2);
+        ctx.lineTo(0, this.height/2);
         ctx.stroke();
+        ctx.restore();
+    },
+
+    beforeStep: function (elapsedTime) {
+        // template
+    },
+
+    afterStep: function (elapsedTime) {
+        // template
+    },
+
+    step: function (elapsedTime) {
+        this.beforeStep(elapsedTime);
+        this.x += this.vx * elapsedTime;
+        this.y += this.vy * elapsedTime;
+        this.afterStep(elapsedTime);
     }
+
+
 
 });
