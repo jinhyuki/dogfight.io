@@ -3,8 +3,8 @@ Df.Obj = SC.Object.extend({
     y: 0,
     vx: 0,
     vy: 0,
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
     rotation: 0,
     color: "#DD55DD",
 

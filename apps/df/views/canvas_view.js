@@ -45,6 +45,54 @@ Df.CanvasView = SC.View.extend({
         this.applyCameraToViewPortTransform(this.ctx);
         scope.paint(this.ctx, this.camera, timestamp);
         this.ctx.restore();
+
+        this.paintControl();
+    },
+
+    paintControl: function () {
+
+        var cx = this.engine.control.intentX;
+        var cy = this.engine.control.intentY;
+        var cd = Math.sqrt(cx*cx + cy*cy);
+        if (cd > 1) {
+            cx = cx / cd;
+            cy = cy / cd;
+        }
+        cx *= 10;
+        cy *= 10;
+
+        var ax = 0;
+        var ay = 0;
+
+        if (this.engine.aim.isDown) {
+            ax = this.engine.aim.intentX;
+            ay = this.engine.aim.intentY;
+            var ad = Math.sqrt(ax*ax + ay*ay);
+            if (ad > 1) {
+                ax = ax / ad;
+                ay = ay / ad;
+            }
+            ax *= 10;
+            ay *= 10;
+        }
+
+        this.ctx.strokeStyle = "rgba(255,255,255,0.4)";
+        this.ctx.lineWidth = 3;
+        this.ctx.beginPath();
+        this.ctx.arc(70, this.canvas.height-70, 50, 0,2*Math.PI);
+        this.ctx.stroke();
+
+        this.ctx.beginPath();
+        this.ctx.arc(70+cx, this.canvas.height-70+cy, 50, 0,2*Math.PI);
+        this.ctx.stroke();
+
+        this.ctx.beginPath();
+        this.ctx.arc(this.canvas.width-70, this.canvas.height-70, 50, 0,2*Math.PI);
+        this.ctx.stroke();
+
+        this.ctx.beginPath();
+        this.ctx.arc(this.canvas.width-70+ax, this.canvas.height-70+ay, 50, 0,2*Math.PI);
+        this.ctx.stroke();
     },
 
     applyCameraToViewPortTransform: function (ctx) {
@@ -131,6 +179,7 @@ Df.CanvasView = SC.View.extend({
             this.engine.aim.touchStartX = touch.clientX;
             this.engine.aim.touchStartY = touch.clientY;
             this.engine.aim.touchId = touch.identifier;
+            this.engine.aim.isDown = true;
         }
     },
 
@@ -171,6 +220,7 @@ Df.CanvasView = SC.View.extend({
             this.engine.aim.touchId = null;
             this.engine.aim.touchStartX = undefined;
             this.engine.aim.touchStartY = undefined;
+            this.engine.aim.isDown = false;
         }
     },
 
