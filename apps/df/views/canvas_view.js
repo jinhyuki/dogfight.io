@@ -134,14 +134,18 @@ Df.CanvasView = SC.View.extend({
         
         // accel
         if (this.engine.aim.isDown && this.engine.aim.isTouch) {
-            this.engine.aim.vx += this.engine.aim.intentX * accelFactor;
-            this.engine.aim.vy += this.engine.aim.intentY * accelFactor;
-            // cap velocity
-            var v = Math.sqrt(this.engine.aim.vx * this.engine.aim.vx + this.engine.aim.vy * this.engine.aim.vy);
-            if (v > pps) {
-                this.engine.aim.vx *= pps / v;
-                this.engine.aim.vy *= pps / v;
-            } 
+            var intent = Math.sqrt(this.engine.aim.intentX * this.engine.aim.intentX + this.engine.aim.intentY * this.engine.aim.intentY);
+
+            if (intent > 0.3) {
+                this.engine.aim.vx += this.engine.aim.intentX * accelFactor;
+                this.engine.aim.vy += this.engine.aim.intentY * accelFactor;
+                // cap velocity
+                var v = Math.sqrt(this.engine.aim.vx * this.engine.aim.vx + this.engine.aim.vy * this.engine.aim.vy);
+                if (v > pps) {
+                    this.engine.aim.vx *= pps / v;
+                    this.engine.aim.vy *= pps / v;
+                } 
+            }
         }
         
         // compute position
@@ -252,8 +256,8 @@ Df.CanvasView = SC.View.extend({
             } else if (touch.identifier === this.engine.aim.touchId) {
                 var dx = touch.clientX - this.engine.aim.touchStartX;
                 var dy = touch.clientY - this.engine.aim.touchStartY;
-                this.engine.aim.intentX = dx / radius;
-                this.engine.aim.intentY = dy / radius;
+                this.engine.aim.intentX = dx / radius / 3;
+                this.engine.aim.intentY = dy / radius / 3;
             }
         }
     },
@@ -270,6 +274,8 @@ Df.CanvasView = SC.View.extend({
             this.engine.aim.touchId = null;
             this.engine.aim.touchStartX = undefined;
             this.engine.aim.touchStartY = undefined;
+            this.engine.aim.intentX = 0;
+            this.engine.aim.intentY = 0;
             this.engine.aim.isDown = false;
             this.engine.aim.isTouch = false;
         }
