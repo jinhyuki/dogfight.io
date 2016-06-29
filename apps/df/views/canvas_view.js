@@ -111,29 +111,29 @@ Df.CanvasView = SC.View.extend({
     },
 
     touchStart: function (touch) {
-        this.touchInfo = {
-            x: touch.clientX,
-            y: touch.clientY,
-            cx: this.camera.get('x'),
-            cy: this.camera.get('y')
-        };
+        // no op
+        // todo: what is captureTouch
     },
 
     touchesDragged: function (touch) {
-        var info = this.touchInfo;
-        var zoom = this.camera.get('zoom');
-        var dx = touch.clientX - info.x;
-        var dy = touch.clientY - info.y;
-        var x = info.cx - dx / zoom;
-        var y = info.cy - dy / zoom;
-        //this.camera.set('x', x);
-        //this.camera.set('y', y);
+        var major = this.canvas.width > this.canvas.height ? this.canvas.width : this.canvas.height;
+        var radius = major / 100;
+        var forMove = touch.startX <= this.canvas.width / 2;
+        if (forMove) {
+            var dx = touch.clientX - touch.startX;
+            var dy = touch.clientY - touch.startY;
+
+            this.engine.control.intentX = dx / radius;
+            this.engine.control.intentY = dy / radius;
+
+            console.log(dx / radius);
+        } else {
+            debugger;
+        }
     },
 
     touchEnd: function (touch) {
-        console.log('Touch End');
-        this.touchesDragged(touch); 
-        this.touchInfo = null;
+        // no op
     },
 
     keyDown: function (evt) {

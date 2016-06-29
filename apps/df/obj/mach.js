@@ -53,7 +53,7 @@ Df.Mach = Df.Obj.extend({
     shoot: function () {
         this.recoil = 4;
         // console.log("Shoot");
-        
+
     },
 
     steer: function (elapsedTime) {
@@ -71,7 +71,7 @@ Df.Mach = Df.Obj.extend({
         var intentSq = intentX * intentX + intentY * intentY;
         var intent = Math.sqrt(intentSq);
 
-        if(intent > 0) {
+        if(intent > 1) {
             intentX = intentX/intent;
             intentY = intentY/intent;
         }
