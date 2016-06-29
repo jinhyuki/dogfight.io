@@ -21,6 +21,8 @@ Df.Engine = SC.Object.extend({
             isDown: false,
             x: 0,
             y: 0,
+            intentX: 0,
+            intentY: 0,
             clientX: undefined,
             clientY: undefined,
             cameraX: undefined,

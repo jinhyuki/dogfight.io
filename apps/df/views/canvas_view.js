@@ -67,6 +67,8 @@ Df.CanvasView = SC.View.extend({
         this.engine.aim.cameraY = evt.clientY - this.canvas.height/2;
         this.engine.aim.x = this.engine.aim.cameraX / this.camera.zoom + this.camera.x;
         this.engine.aim.y = this.engine.aim.cameraY / this.camera.zoom + this.camera.y;
+        this.engine.aim.intentX = this.engine.aim.x - this.engine.mach.x;
+        this.engine.aim.intentY = this.engine.aim.y - this.engine.mach.y;
     },
 
     mouseEntered: function (evt) {
@@ -150,8 +152,8 @@ Df.CanvasView = SC.View.extend({
                 var dx = touch.clientX - this.engine.aim.touchStartX;
                 var dy = touch.clientY - this.engine.aim.touchStartY;
 
-                this.engine.aim.x = this.engine.mach.x + dx;
-                this.engine.aim.y = this.engine.mach.y + dy;
+                this.engine.aim.intentX = dx;
+                this.engine.aim.intentY = dy;
             }
         }
     },

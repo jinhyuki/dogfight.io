@@ -20,8 +20,9 @@ Df.Mach = Df.Obj.extend({
             intentY: 0
         };
         this.aim = {
-            x: undefined,
-            y: undefined
+            intentX: undefined,
+            intentY: undefined,
+            isDown: false
         };
         console.log('Mach init');
     },
@@ -32,8 +33,8 @@ Df.Mach = Df.Obj.extend({
     },
 
     applyAim: function (aim) {
-        this.aim.x = aim.x;
-        this.aim.y = aim.y;
+        this.aim.intentX = aim.intentX;
+        this.aim.intentY = aim.intentY;
         this.aim.isDown = aim.isDown;
     },
 
@@ -57,13 +58,12 @@ Df.Mach = Df.Obj.extend({
     },
 
     steer: function (elapsedTime) {
-        var dx = this.aim.x - this.x;
-        var dy = this.aim.y - this.y;
-        var dSq = dx*dx + dy*dy;
+        var dx = this.aim.intentX;
+        var dy = this.aim.intentY;
+        var dSq = dx * dx + dy * dy;
         var d = Math.sqrt(dSq);
         if (d > 0) {
             this.rotation = Math.atan2(dy, dx);
-            // console.log(dy/d, dx/d, this.rotation);
         }
     },
 
