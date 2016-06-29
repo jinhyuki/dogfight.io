@@ -93,6 +93,18 @@ Df.Mach = Df.Obj.extend({
     drag: function (elapsedTime) {
         this.vx -= this.vx * this.airDragFactor;
         this.vy -= this.vy * this.airDragFactor;
+    },
+
+    paintObj: function (ctx) {
+        sc_super();
+
+        // cross hair
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 10;
+        
+        ctx.moveTo(0, 105);
+        ctx.lineTo(0, 95);
+        ctx.stroke();
     }
 
 });

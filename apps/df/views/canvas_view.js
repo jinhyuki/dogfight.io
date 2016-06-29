@@ -121,13 +121,19 @@ Df.CanvasView = SC.View.extend({
             this.engine.control.intentY = 0;
             this.engine.control.touchStartX = touch.clientX;
             this.engine.control.touchStartY = touch.clientY;
-            this.engine.control.touchId = touch.identifier;    
+            this.engine.control.touchId = touch.identifier;
+        } else {
+            this.engine.aim.touchStartX = touch.clientX;
+            this.engine.aim.touchStartY = touch.clientY;
+            this.engine.aim.touchId = touch.identifier;
         }
     },
 
     touchesDragged: function (evt) {
-        var major = this.canvas.width > this.canvas.height ? this.canvas.width : this.canvas.height;
-        var radius = major / 300;
+        
+        // todo: this controller radius must be dependant on the user or the device.
+        var radius = 2;
+        
         for (var i = 0; i < evt.touches.length; i++) {
             var touch = evt.touches[i];
             if (touch.identifier === this.engine.control.touchId) {
@@ -137,6 +143,12 @@ Df.CanvasView = SC.View.extend({
                 this.engine.control.intentX = dx / radius;
                 this.engine.control.intentY = dy / radius;
                 console.log(this.engine.control.intentX);
+            } else if (touch.identifier === this.engine.aim.touchId) {
+                var dx = touch.clientX - this.engine.aim.touchStartX;
+                var dy = touch.clientY - this.engine.aim.touchStartY;
+
+                this.engine.aim.x = this.engine.mach.x + dx;
+                this.engine.aim.y = this.engine.mach.y + dy;
             }
         }
     },
@@ -149,6 +161,10 @@ Df.CanvasView = SC.View.extend({
             this.engine.control.touchId = null;
             this.engine.control.touchStartX = undefined;
             this.engine.control.touchStartY = undefined;
+        } else if (touch.identifier === this.engine.aim.touchId) {
+            this.engine.aim.touchId = null;
+            this.engine.aim.touchStartX = undefined;
+            this.engine.aim.touchStartY = undefined;
         }
     },
 

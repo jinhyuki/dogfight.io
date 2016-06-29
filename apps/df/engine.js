@@ -13,7 +13,9 @@ Df.Engine = SC.Object.extend({
             down: false,
             left: false,
             right: false,
-            touchId: null
+            touchId: null,
+            touchStartX: undefined,
+            touchStartY: undefined
         };
         this.aim = {
             isDown: false,
@@ -22,7 +24,10 @@ Df.Engine = SC.Object.extend({
             clientX: undefined,
             clientY: undefined,
             cameraX: undefined,
-            cameraY: undefined
+            cameraY: undefined,
+            touchId: null,
+            touchStartX: undefined,
+            touchStartY: undefined
         };
         this.fuel(this.scope);
     },

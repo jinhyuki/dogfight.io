@@ -15,14 +15,18 @@ Df.Obj = SC.Object.extend({
     paint: function (ctx, camera, timestamp) {
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.rotate(this.rotation);
+        ctx.rotate(this.rotation - Math.PI / 2);
+        this.paintObj(ctx);
+        ctx.restore();
+    },
+
+    paintObj: function (ctx) {
         ctx.strokeStyle = this.color;
         ctx.lineWidth = this.width;
         ctx.beginPath();
         ctx.moveTo(0, -this.height/2);
         ctx.lineTo(0, this.height/2);
         ctx.stroke();
-        ctx.restore();
     },
 
     beforeStep: function (elapsedTime) {
