@@ -17,11 +17,11 @@ Df.Obj = SC.Object.extend({
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation - Math.PI / 2);
-        this.paintObj(ctx);
+        this.paintObj(ctx, camera, timestamp);
         ctx.restore();
     },
 
-    paintObj: function (ctx) {
+    paintObj: function (ctx, camera, timestamp) {
         ctx.strokeStyle = this.color;
         ctx.lineWidth = this.width;
         ctx.beginPath();

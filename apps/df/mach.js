@@ -20,14 +20,10 @@ Df.Mach = Df.Obj.extend({
             intentY: 0
         };
         this.aim = {
-            intentX: 0,
-            intentY: 0,
+            x: undefined,
+            y: undefined,
             isDown: false
         };
-
-        // relative aim point
-        this.aimX = 0;
-        this.aimY = 0;
 
         console.log('Mach init');
     },
@@ -38,8 +34,8 @@ Df.Mach = Df.Obj.extend({
     },
 
     applyAim: function (aim) {
-        this.aim.intentX = aim.intentX;
-        this.aim.intentY = aim.intentY;
+        this.aim.x = aim.x;
+        this.aim.y = aim.y;
         this.aim.isDown = aim.isDown;
     },
 
@@ -61,22 +57,17 @@ Df.Mach = Df.Obj.extend({
         this.recoil = 4;
         var x = this.x;
         var y = this.y;
-        var vx = Math.cos(this.rotation) * 360; 
-        var vy = Math.sin(this.rotation) * 360;
+        var vx = Math.cos(this.rotation) * 370; 
+        var vy = Math.sin(this.rotation) * 370;
         this.scope.fireBullet(x, y, vx, vy);
     },
 
     steer: function (elapsedTime) {
-        this.aimX += this.aim.intentX;
-        this.aimY += this.aim.intentY;
-        var dSq = this.aimX * this.aimX + this.aimY * this.aimY;
-        var d = Math.sqrt(dSq);
+        var dx = this.aim.x - this.x;
+        var dy = this.aim.y - this.y;
+        var d = Math.sqrt(dx*dx+dy*dy);
         if (d > 0) {
-            if (d > 1) {
-                this.aimX = this.aimX / d;
-                this.aimY = this.aimY / d;
-            }
-            this.rotation = Math.atan2(this.aimY, this.aimX);
+            this.rotation = Math.atan2(dy, dx);
         }
     },
 
@@ -108,16 +99,29 @@ Df.Mach = Df.Obj.extend({
         this.vy -= this.vy * this.airDragFactor;
     },
 
-    paintObj: function (ctx) {
+    paint: function (ctx, camera, timestamp) {
         sc_super();
+        this.paintAim(ctx, camera, timestamp);
+    },
 
-        // cross hair
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 10;
-        
-        ctx.moveTo(0, 105);
-        ctx.lineTo(0, 95);
+    paintObj: function (ctx, camera, timestamp) {
+        sc_super();
+    },
+
+    paintAim: function (ctx, camera, timestamp) {
+
+        // draw aim
+        ctx.save();
+        ctx.translate(this.aim.x, this.aim.y);
+        ctx.strokeStyle = '#dddddd';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(0, 0, 10, 0,2*Math.PI);
         ctx.stroke();
+        // ctx.rotate(this.rotation - Math.PI / 2);
+        ctx.restore();
+
+
     }
 
 });

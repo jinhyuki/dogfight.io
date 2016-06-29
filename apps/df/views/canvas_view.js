@@ -115,8 +115,8 @@ Df.CanvasView = SC.View.extend({
         this.engine.aim.cameraY = evt.clientY - this.canvas.height/2;
         this.engine.aim.x = this.engine.aim.cameraX / this.camera.zoom + this.camera.x;
         this.engine.aim.y = this.engine.aim.cameraY / this.camera.zoom + this.camera.y;
-        this.engine.aim.intentX = this.engine.aim.x - this.engine.mach.x;
-        this.engine.aim.intentY = this.engine.aim.y - this.engine.mach.y;
+        // this.engine.aim.intentX = this.engine.aim.x - this.engine.mach.x;
+        // this.engine.aim.intentY = this.engine.aim.y - this.engine.mach.y;
     },
 
     mouseEntered: function (evt) {
@@ -201,9 +201,8 @@ Df.CanvasView = SC.View.extend({
             } else if (touch.identifier === this.engine.aim.touchId) {
                 var dx = touch.clientX - this.engine.aim.touchStartX;
                 var dy = touch.clientY - this.engine.aim.touchStartY;
-
-                this.engine.aim.intentX = dx / radius / 6;
-                this.engine.aim.intentY = dy / radius / 6;
+                this.engine.aim.intentX = dx / radius / 2;
+                this.engine.aim.intentY = dy / radius / 2;
             }
         }
     },

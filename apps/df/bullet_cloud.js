@@ -8,7 +8,7 @@ Df.BulletCloud = SC.Object.extend({
         console.log('Bullet cloud init');
 
         // minimum 2.
-        this.maxCount = 5;
+        this.maxCount = 1000;
 
         this.dummyHead = Df.Bullet.create({});
 

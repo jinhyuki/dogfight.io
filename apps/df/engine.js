@@ -20,7 +20,7 @@ Df.Engine = SC.Object.extend({
         this.aim = {
             isDown: false,
             x: 0,
-            y: 0,
+            y: -1,
             intentX: 0,
             intentY: 0,
             clientX: undefined,
@@ -51,6 +51,14 @@ Df.Engine = SC.Object.extend({
 
     step: function () {
         this.mach.applyControl(this.control);
+
+        if (this.aim.touchId !== null) {
+            this.aim.x += this.aim.intentX;
+            this.aim.y += this.aim.intentY;
+
+            
+        }
+
         this.mach.applyAim(this.aim);
         this.scope.step(this.msStep / 1000);
     }
