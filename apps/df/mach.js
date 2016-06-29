@@ -54,11 +54,11 @@ Df.Mach = Df.Obj.extend({
 
     afterStep: function (elapsedTime) {
         sc_super();
-        
+
     },
 
     shoot: function () {
-        this.recoil = 10;
+        this.recoil = 18;
         var x = this.x;
         var y = this.y;
         var vx = Math.cos(this.rotation) * 370; 

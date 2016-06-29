@@ -124,8 +124,8 @@ Df.CanvasView = SC.View.extend({
     },
 
     computeTouchAim: function (elapsedTime) {
-        var pps = 360;
-        var accelFactor = 10;
+        var pps = 400;
+        var accelFactor = 20;
         var airDragFactor = 0.2;
         
         // drag
