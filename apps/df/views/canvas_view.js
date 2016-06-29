@@ -125,50 +125,48 @@ Df.CanvasView = SC.View.extend({
 
     computeTouchAim: function (elapsedTime) {
         var pps = 360;
-        var accelFactor = 30;
-        var airDragFactor = 0.1;
+        var accelFactor = 10;
+        var airDragFactor = 0.2;
         
+        // drag
+        this.engine.aim.vx -= this.engine.aim.vx * airDragFactor;
+        this.engine.aim.vy -= this.engine.aim.vy * airDragFactor;
+        
+        // accel
         if (this.engine.aim.isDown && this.engine.aim.isTouch) {
-            
-            // drag
-            this.engine.aim.vx -= this.engine.aim.vx * airDragFactor;
-            this.engine.aim.vy -= this.engine.aim.vy * airDragFactor;
-            
-            // accel
             this.engine.aim.vx += this.engine.aim.intentX * accelFactor;
             this.engine.aim.vy += this.engine.aim.intentY * accelFactor;
-            
             // cap velocity
             var v = Math.sqrt(this.engine.aim.vx * this.engine.aim.vx + this.engine.aim.vy * this.engine.aim.vy);
             if (v > pps) {
                 this.engine.aim.vx *= pps / v;
                 this.engine.aim.vy *= pps / v;
             } 
-            
-            // compute position
-            this.engine.aim.x += this.engine.aim.vx * elapsedTime;
-            this.engine.aim.y += this.engine.aim.vy * elapsedTime;
-
-            // compute viewport position
-            this.engine.aim.cameraX = (this.engine.aim.x - this.camera.x) * this.camera.zoom;
-            this.engine.aim.cameraY = (this.engine.aim.y - this.camera.y) * this.camera.zoom;
-            this.engine.aim.clientX = this.engine.aim.cameraX + this.canvas.width / 2;
-            this.engine.aim.clientY = this.engine.aim.cameraY + this.canvas.height / 2;
-
-            // cap aim position
-            if (this.engine.aim.clientX < 0) {
-                this.engine.aim.x -= this.engine.aim.clientX / this.camera.zoom;
-            } else if (this.engine.aim.clientX > this.canvas.width) {
-                this.engine.aim.x -= (this.engine.aim.clientX - this.canvas.width) / this.camera.zoom;
-            }
-            if (this.engine.aim.clientY < 0) {
-                this.engine.aim.y -= this.engine.aim.clientY / this.camera.zoom;
-            } else if (this.engine.aim.clientY > this.canvas.height) {
-                this.engine.aim.y -= (this.engine.aim.clientY - this.canvas.height) / this.camera.zoom;
-            }
-
-            console.log(this.engine.aim.vx);
         }
+        
+        // compute position
+        this.engine.aim.x += this.engine.aim.vx * elapsedTime;
+        this.engine.aim.y += this.engine.aim.vy * elapsedTime;
+
+        // compute viewport position
+        this.engine.aim.cameraX = (this.engine.aim.x - this.camera.x) * this.camera.zoom;
+        this.engine.aim.cameraY = (this.engine.aim.y - this.camera.y) * this.camera.zoom;
+        this.engine.aim.clientX = this.engine.aim.cameraX + this.canvas.width / 2;
+        this.engine.aim.clientY = this.engine.aim.cameraY + this.canvas.height / 2;
+
+        // cap aim position
+        if (this.engine.aim.clientX < 0) {
+            this.engine.aim.x -= this.engine.aim.clientX / this.camera.zoom;
+        } else if (this.engine.aim.clientX > this.canvas.width) {
+            this.engine.aim.x -= (this.engine.aim.clientX - this.canvas.width) / this.camera.zoom;
+        }
+        if (this.engine.aim.clientY < 0) {
+            this.engine.aim.y -= this.engine.aim.clientY / this.camera.zoom;
+        } else if (this.engine.aim.clientY > this.canvas.height) {
+            this.engine.aim.y -= (this.engine.aim.clientY - this.canvas.height) / this.camera.zoom;
+        }
+
+    
     },
 
     mouseEntered: function (evt) {

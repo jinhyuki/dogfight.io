@@ -52,6 +52,11 @@ Df.Mach = Df.Obj.extend({
         
     },
 
+    afterStep: function (elapsedTime) {
+        sc_super();
+        
+    },
+
     shoot: function () {
         this.recoil = 10;
         var x = this.x;
