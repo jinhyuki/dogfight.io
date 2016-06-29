@@ -7,6 +7,7 @@ Df.Obj = SC.Object.extend({
     height: 30,
     rotation: 0,
     color: "#DD55DD",
+    scope: null,
 
     init: function () {
         console.log('Obj init');

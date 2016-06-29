@@ -20,8 +20,8 @@ Df.Mach = Df.Obj.extend({
             intentY: 0
         };
         this.aim = {
-            intentX: undefined,
-            intentY: undefined,
+            intentX: 0,
+            intentY: 0,
             isDown: false
         };
 
@@ -59,7 +59,7 @@ Df.Mach = Df.Obj.extend({
     shoot: function () {
         this.recoil = 4;
         // console.log("Shoot");
-
+        
     },
 
     steer: function (elapsedTime) {
