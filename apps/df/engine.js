@@ -1,4 +1,4 @@
-sc_require("scope/scope")
+sc_require('scope');
 
 
 Df.Engine = SC.Object.extend({

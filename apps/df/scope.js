@@ -1,4 +1,4 @@
-sc_require("scope/bullet_cloud")
+sc_require('bullet_cloud');
 
 Df.Scope = SC.Object.extend({
 
@@ -8,6 +8,10 @@ Df.Scope = SC.Object.extend({
         this.bulletCloud = Df.BulletCloud.create({
             scope: this
         });
+    },
+
+    fireBullet: function (x, y, vx, vy) {
+        this.bulletCloud.fire(x, y, vx, vy);
     },
 
     add: function (obj) {

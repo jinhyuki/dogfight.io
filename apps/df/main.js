@@ -1,3 +1,5 @@
+sc_require('engine');
+
 Df.main = function main () {
 
   Df.engine = Df.Engine.create({});

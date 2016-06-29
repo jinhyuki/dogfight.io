@@ -1,4 +1,4 @@
-sc_require("obj/obj")
+sc_require('obj');
 
 Df.Mach = Df.Obj.extend({
 
@@ -49,17 +49,21 @@ Df.Mach = Df.Obj.extend({
         this.drag(elapsedTime);
         this.accel(this.control.intentX, this.control.intentY, elapsedTime);
         
+        this.steer(elapsedTime);
+
         if (this.aim.isDown && this.recoil-- <= 0) {
             this.shoot();    
         }
-        this.steer(elapsedTime);
         
     },
 
     shoot: function () {
         this.recoil = 4;
-        // console.log("Shoot");
-        
+        var x = this.x;
+        var y = this.y;
+        var vx = Math.cos(this.rotation) * 360; 
+        var vy = Math.sin(this.rotation) * 360;
+        this.scope.fireBullet(x, y, vx, vy);
     },
 
     steer: function (elapsedTime) {

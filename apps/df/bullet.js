@@ -1,4 +1,4 @@
-sc_require("obj/obj")
+sc_require('obj');
 
 Df.Bullet = Df.Obj.extend({
 

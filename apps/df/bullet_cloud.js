@@ -1,4 +1,4 @@
-sc_require("obj/bullet")
+sc_require('bullet');
 
 Df.BulletCloud = SC.Object.extend({
 
@@ -9,18 +9,16 @@ Df.BulletCloud = SC.Object.extend({
 
         // minimum 2.
         this.maxCount = 5;
-        this.count = 0;   
-        
+
         this.dummyHead = Df.Bullet.create({});
 
         // create bullet pool of maxCount
-        var tail = this.dummyHead;
+        this.tail = this.dummyHead;
         for (var i=0; i<this.maxCount; i++) {
-            var bullet = Df.Bullet.create({
+            this.tail.next = Df.Bullet.create({
                 scope: this.scope
             });
-            tail.next = bullet;
-            tail = tail.next;
+            this.tail = this.tail.next;
         }
 
         this.nextAvail = this.dummyHead.next;
@@ -28,10 +26,16 @@ Df.BulletCloud = SC.Object.extend({
 
     fire: function (x, y, vx, vy) {
         if (!this.nextAvail){
-            // pop the first node and push to the end
+            // get the first node
             this.nextAvail = this.dummyHead.next;
-            this.dummyHead.next = this.nextAvail.next;
+            // remove it
+            this.dummyHead.next = this.dummyHead.next.next;
+            // and remove the link
             this.nextAvail.next = null;
+            // then make it tail
+            this.tail.next = this.nextAvail;
+            // update tail ref
+            this.tail = this.tail.next;
         }
 
         this.nextAvail.x = x;
