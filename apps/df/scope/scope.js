@@ -1,5 +1,4 @@
-debugger;
-sc_require("scope/bullet_cloud");
+sc_require("scope/bullet_cloud")
 
 Df.Scope = SC.Object.extend({
 
