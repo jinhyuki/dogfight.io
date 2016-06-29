@@ -24,6 +24,11 @@ Df.Mach = Df.Obj.extend({
             intentY: undefined,
             isDown: false
         };
+
+        // relative aim point
+        this.aimX = 0;
+        this.aimY = 0;
+
         console.log('Mach init');
     },
 
@@ -58,12 +63,16 @@ Df.Mach = Df.Obj.extend({
     },
 
     steer: function (elapsedTime) {
-        var dx = this.aim.intentX;
-        var dy = this.aim.intentY;
-        var dSq = dx * dx + dy * dy;
+        this.aimX += this.aim.intentX;
+        this.aimY += this.aim.intentY;
+        var dSq = this.aimX * this.aimX + this.aimY * this.aimY;
         var d = Math.sqrt(dSq);
         if (d > 0) {
-            this.rotation = Math.atan2(dy, dx);
+            if (d > 1) {
+                this.aimX = this.aimX / d;
+                this.aimY = this.aimY / d;
+            }
+            this.rotation = Math.atan2(this.aimY, this.aimX);
         }
     },
 

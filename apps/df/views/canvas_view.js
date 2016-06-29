@@ -136,8 +136,9 @@ Df.CanvasView = SC.View.extend({
 
     touchesDragged: function (evt) {
         
+        // in number of pixels.
         // todo: this controller radius must be dependant on the user or the device.
-        var radius = 2;
+        var radius = 4;
         
         for (var i = 0; i < evt.touches.length; i++) {
             var touch = evt.touches[i];
@@ -152,8 +153,8 @@ Df.CanvasView = SC.View.extend({
                 var dx = touch.clientX - this.engine.aim.touchStartX;
                 var dy = touch.clientY - this.engine.aim.touchStartY;
 
-                this.engine.aim.intentX = dx;
-                this.engine.aim.intentY = dy;
+                this.engine.aim.intentX = dx / radius / 6;
+                this.engine.aim.intentY = dy / radius / 6;
             }
         }
     },
