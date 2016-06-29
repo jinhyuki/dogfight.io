@@ -44,7 +44,6 @@ Df.Mach = Df.Obj.extend({
 
         this.drag(elapsedTime);
         this.accel(this.control.intentX, this.control.intentY, elapsedTime);
-        
         this.steer(elapsedTime);
 
         if (this.aim.isDown && this.recoil-- <= 0) {
@@ -54,7 +53,7 @@ Df.Mach = Df.Obj.extend({
     },
 
     shoot: function () {
-        this.recoil = 4;
+        this.recoil = 10;
         var x = this.x;
         var y = this.y;
         var vx = Math.cos(this.rotation) * 370; 

@@ -27,7 +27,7 @@ Df.CanvasView = SC.View.extend({
         this.resizeCanvas();
         
         window.addEventListener('resize', this.resizeCanvas.bind(this), false);
-        this.worker = setInterval(this.triggerPaint.bind(this), this.engine.msStep);
+        this.worker = setInterval(this.step.bind(this), this.engine.msStep);
 
         // for key event captures
         this.becomeFirstResponder();
@@ -99,7 +99,11 @@ Df.CanvasView = SC.View.extend({
         ctx.translate(this.canvas.width/2, this.canvas.height/2);
     },
 
-    triggerPaint: function () {
+    step: function () {
+        var elapsedTime = this.engine.msStep / 1000;
+
+        this.computeTouchAim(elapsedTime);
+
         window.requestAnimationFrame(this.paint.bind(this));
     },
 
@@ -117,6 +121,54 @@ Df.CanvasView = SC.View.extend({
         this.engine.aim.y = this.engine.aim.cameraY / this.camera.zoom + this.camera.y;
         // this.engine.aim.intentX = this.engine.aim.x - this.engine.mach.x;
         // this.engine.aim.intentY = this.engine.aim.y - this.engine.mach.y;
+    },
+
+    computeTouchAim: function (elapsedTime) {
+        var pps = 360;
+        var accelFactor = 30;
+        var airDragFactor = 0.1;
+        
+        if (this.engine.aim.isDown && this.engine.aim.isTouch) {
+            
+            // drag
+            this.engine.aim.vx -= this.engine.aim.vx * airDragFactor;
+            this.engine.aim.vy -= this.engine.aim.vy * airDragFactor;
+            
+            // accel
+            this.engine.aim.vx += this.engine.aim.intentX * accelFactor;
+            this.engine.aim.vy += this.engine.aim.intentY * accelFactor;
+            
+            // cap velocity
+            var v = Math.sqrt(this.engine.aim.vx * this.engine.aim.vx + this.engine.aim.vy * this.engine.aim.vy);
+            if (v > pps) {
+                this.engine.aim.vx *= pps / v;
+                this.engine.aim.vy *= pps / v;
+            } 
+            
+            // compute position
+            this.engine.aim.x += this.engine.aim.vx * elapsedTime;
+            this.engine.aim.y += this.engine.aim.vy * elapsedTime;
+
+            // compute viewport position
+            this.engine.aim.cameraX = (this.engine.aim.x - this.camera.x) * this.camera.zoom;
+            this.engine.aim.cameraY = (this.engine.aim.y - this.camera.y) * this.camera.zoom;
+            this.engine.aim.clientX = this.engine.aim.cameraX + this.canvas.width / 2;
+            this.engine.aim.clientY = this.engine.aim.cameraY + this.canvas.height / 2;
+
+            // cap aim position
+            if (this.engine.aim.clientX < 0) {
+                this.engine.aim.x -= this.engine.aim.clientX / this.camera.zoom;
+            } else if (this.engine.aim.clientX > this.canvas.width) {
+                this.engine.aim.x -= (this.engine.aim.clientX - this.canvas.width) / this.camera.zoom;
+            }
+            if (this.engine.aim.clientY < 0) {
+                this.engine.aim.y -= this.engine.aim.clientY / this.camera.zoom;
+            } else if (this.engine.aim.clientY > this.canvas.height) {
+                this.engine.aim.y -= (this.engine.aim.clientY - this.canvas.height) / this.camera.zoom;
+            }
+
+            console.log(this.engine.aim.vx);
+        }
     },
 
     mouseEntered: function (evt) {
@@ -180,6 +232,7 @@ Df.CanvasView = SC.View.extend({
             this.engine.aim.touchStartY = touch.clientY;
             this.engine.aim.touchId = touch.identifier;
             this.engine.aim.isDown = true;
+            this.engine.aim.isTouch = true;
         }
     },
 
@@ -201,8 +254,8 @@ Df.CanvasView = SC.View.extend({
             } else if (touch.identifier === this.engine.aim.touchId) {
                 var dx = touch.clientX - this.engine.aim.touchStartX;
                 var dy = touch.clientY - this.engine.aim.touchStartY;
-                this.engine.aim.intentX = dx / radius / 2;
-                this.engine.aim.intentY = dy / radius / 2;
+                this.engine.aim.intentX = dx / radius;
+                this.engine.aim.intentY = dy / radius;
             }
         }
     },
@@ -220,6 +273,7 @@ Df.CanvasView = SC.View.extend({
             this.engine.aim.touchStartX = undefined;
             this.engine.aim.touchStartY = undefined;
             this.engine.aim.isDown = false;
+            this.engine.aim.isTouch = false;
         }
     },
 
