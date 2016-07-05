@@ -129,8 +129,21 @@ Df.CanvasView = SC.View.extend({
     },
 
     computeTouchAim: function (elapsedTime) {
-        var pps = 400;
-        var accelFactor = 20;
+
+        // if (this.engine.aim.isDown && this.engine.aim.isTouch) {
+        //     var intentX = this.engine.aim.intentX;
+        //     var intentY = this.engine.aim.intentY;
+        //     var intent = Math.sqrt(intentX * intentX + intentY * intentY);
+        //     if (intent > 1) {
+        //         intentX /= intent;
+        //         intentY /= intent;
+        //     }
+        //     this.engine.aim.x = this.engine.mach.x + intentX*100;
+        //     this.engine.aim.y = this.engine.mach.y + intentY*100;
+        // }
+
+        var pps = 500;
+        var accelFactor = 30;
         var airDragFactor = 0.2;
         
         // drag
@@ -141,16 +154,14 @@ Df.CanvasView = SC.View.extend({
         if (this.engine.aim.isDown && this.engine.aim.isTouch) {
             var intent = Math.sqrt(this.engine.aim.intentX * this.engine.aim.intentX + this.engine.aim.intentY * this.engine.aim.intentY);
 
-            if (intent > 0.3) {
-                this.engine.aim.vx += this.engine.aim.intentX * accelFactor;
-                this.engine.aim.vy += this.engine.aim.intentY * accelFactor;
-                // cap velocity
-                var v = Math.sqrt(this.engine.aim.vx * this.engine.aim.vx + this.engine.aim.vy * this.engine.aim.vy);
-                if (v > pps) {
-                    this.engine.aim.vx *= pps / v;
-                    this.engine.aim.vy *= pps / v;
-                } 
-            }
+            this.engine.aim.vx += this.engine.aim.intentX * accelFactor;
+            this.engine.aim.vy += this.engine.aim.intentY * accelFactor;
+            // cap velocity
+            var v = Math.sqrt(this.engine.aim.vx * this.engine.aim.vx + this.engine.aim.vy * this.engine.aim.vy);
+            if (v > pps) {
+                this.engine.aim.vx *= pps / v;
+                this.engine.aim.vy *= pps / v;
+            } 
         }
         
         // compute position
@@ -163,18 +174,27 @@ Df.CanvasView = SC.View.extend({
         // this.engine.aim.clientX = this.engine.aim.cameraX + this.canvas.width / 2;
         // this.engine.aim.clientY = this.engine.aim.cameraY + this.canvas.height / 2;
 
-        // cap aim position
-        if (this.engine.aim.x < this.engine.bound.x0) {
-            this.engine.aim.x = this.engine.bound.x0;
-        } else if (this.engine.aim.x > this.engine.bound.x1) {
-            this.engine.aim.x = this.engine.bound.x1;
+        // // cap aim position
+        // if (this.engine.aim.x < this.engine.bound.x0) {
+        //     this.engine.aim.x = this.engine.bound.x0;
+        // } else if (this.engine.aim.x > this.engine.bound.x1) {
+        //     this.engine.aim.x = this.engine.bound.x1;
+        // }
+        // if (this.engine.aim.y < this.engine.bound.y0) {
+        //     this.engine.aim.y = this.engine.bound.y0;
+        // } else if (this.engine.aim.y > this.engine.bound.y1) {
+        //     this.engine.aim.y = this.engine.bound.y1;
+        // }
+        
+        var dx = this.engine.aim.x - this.engine.mach.x;
+        var dy = this.engine.aim.y - this.engine.mach.y;
+        var d = Math.sqrt(dx*dx + dy*dy);
+        if (d > 100) {
+            this.engine.aim.x = this.engine.mach.x + dx / d * 100;
+            this.engine.aim.y = this.engine.mach.y + dy / d * 100;
+
         }
-        if (this.engine.aim.y < this.engine.bound.y0) {
-            this.engine.aim.y = this.engine.bound.y0;
-        } else if (this.engine.aim.y > this.engine.bound.y1) {
-            this.engine.aim.y = this.engine.bound.y1;
-        }
-    
+
     },
 
     mouseEntered: function (evt) {
