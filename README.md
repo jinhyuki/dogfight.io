@@ -2,4 +2,4 @@
 Dogfight.io
 ===========
 
-[Demo](https://jinhyuki.github.io/dogfight.io/)
+[Demo](https://kndlt.github.io/dogfight.io/)
